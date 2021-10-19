@@ -23,3 +23,5 @@ doc/api/
 db.sqlite3
 *.pyc
 keys
+
+.idea
