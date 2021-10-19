@@ -33,3 +33,7 @@
 
 * **1 hour** - set up a generator of data in iOS
 * **0.5 hour** - setting up git respository
+
+### 13/10/21 - 15/10/21
+
+* **5** - playing around with the technologies being used
