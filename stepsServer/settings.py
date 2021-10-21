@@ -93,12 +93,12 @@ elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
         raise Exception("DATABASE_URL environment variable not defined")
     DATABASES = {
         #"default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
-        "default": {'ENGINE': 'django.db.backends.postgresql',
+        "default": {'ENGINE': 'django.db.backends.postgresql_psycopg2',
                     'HOST': 'udyyijcvpoavuqkvhekq.supabase.co',
                     'PORT': '5432',
                     'USER': 'postgres',
                     'PASSWORD': 'select35over729154scoregirl98should',
-                    'DATABASE': 'postgres',
+                    'NAME': 'postgres',
                     },
     }
 
