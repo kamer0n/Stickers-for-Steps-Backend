@@ -2,6 +2,8 @@ from django.conf import settings
 from django.urls import path, include
 from django.contrib.auth.models import User
 from rest_framework.response import Response
+from rest_framework.authtoken import views
+
 
 from steps.models import *
 from django.contrib import admin
@@ -86,5 +88,7 @@ urlpatterns = [
     path('', image_upload, name='upload'),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/', include('steps.urls', namespace='api')),
+    path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
 ]
