@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
+from .models import Profile, Sticker
+
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -24,3 +26,20 @@ class UserSerializer(serializers.ModelSerializer):
                 fields=['username', 'email']
             )
         ]
+
+
+class StickerSerializer(serializers.ModelSerializer):
+    key = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Sticker
+        fields = '__all__'
+
+
+class UserStickerSerializer(serializers.ModelSerializer):
+    #sticker = StickerSerializer(many=True)
+
+    class Meta:
+        model = Profile
+        fields = ('stickers',)
+        depth = 1

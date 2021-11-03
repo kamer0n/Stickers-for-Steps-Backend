@@ -2,12 +2,16 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserStickerSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+
 from rest_framework.permissions import IsAdminUser
 from django.contrib.auth.models import User
+
+from .models import Profile
 
 import boto3
 from botocore.config import Config
@@ -54,11 +58,7 @@ def image_upload(request):
 
 
 class UserRecordView(APIView):
-    """
-    API View to create or get a list of all the registered
-    users. GET request returns the registered users whereas
-    a POST request allows to create a new user.
-    """
+
     permission_classes = [IsAdminUser]
 
     def get(self, format=None):
@@ -67,6 +67,7 @@ class UserRecordView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        print(request.data)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=ValueError):
             serializer.create(validated_data=request.data)
@@ -81,3 +82,11 @@ class UserRecordView(APIView):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class ProfileStickersView(APIView):
+
+    def get(self, request, format=None):
+        profile = Profile.objects.filter(user=request.user)
+        serializer = UserStickerSerializer(profile, many=True)
+        return Response(serializer.data)
