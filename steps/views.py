@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.forms import model_to_dict
+from django.http import JsonResponse
 from django.shortcuts import render
 
-from .serializers import UserSerializer, UserStickerSerializer
+from .serializers import UserSerializer, UserStickerSerializer, CollectionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -87,6 +89,14 @@ class UserRecordView(APIView):
 class ProfileStickersView(APIView):
 
     def get(self, request, format=None):
-        profile = Profile.objects.filter(user=request.user)
-        serializer = UserStickerSerializer(profile, many=True)
-        return Response(serializer.data)
+        profile = Profile.objects.get(user=request.user)
+        collections = Collection.objects.all()
+        collections = list(collections.values())
+        for sticker in profile.get_stickers():
+            for collection in collections:
+                if "stickers" not in collection:
+                    collection['stickers'] = []
+                if collection['id'] == sticker.collection_id:
+                    collection['stickers'].append(model_to_dict(sticker))
+
+        return JsonResponse(list(collections), safe=False)

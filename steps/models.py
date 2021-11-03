@@ -38,3 +38,12 @@ class Profile(models.Model):
     phonenumber = models.CharField(verbose_name="phone number", max_length=10)
     birthdate = models.DateField(verbose_name="birth date")
     stickers = models.ManyToManyField(Sticker, related_name='stickers')
+
+    def get_sticker_id(self):
+        return [x.id for x in self.stickers.all()]
+
+    def get_sticker_collection_id(self):
+        return [x.collection_id for x in self.stickers.all()]
+
+    def get_stickers(self):
+        return [x for x in self.stickers.all()]
