@@ -15,7 +15,7 @@ app_name = 'friends_api'
 
 urlpatterns = [
     path('users/', view=all_users, name="friendship_view_users"),
-    path('friends/<slug:username>/', view=FriendsListView.as_view(),
+    path('friends/', view=FriendsListView.as_view(),
         name="friendship_view_friends",
     ),
     path('friend/add/<slug:to_username>/', view=friendship_add_friend,
