@@ -25,7 +25,7 @@ def presignedurl(obj, combined=True):
     try:
         key = obj.key
     except AttributeError:
-        pass
+        key = obj
     if not combined:
         key = obj.type + '/' + obj.desc
     s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
