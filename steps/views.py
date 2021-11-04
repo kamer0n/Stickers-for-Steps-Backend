@@ -26,7 +26,7 @@ def presignedurl(obj):
     s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
 
     return s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
-                                                                'Key': obj }, ExpiresIn=100)
+                                                                'Key': obj.type + '/' + obj.desc, }, ExpiresIn=100)
 
 def image_upload(request):
     if request.method == 'POST':
