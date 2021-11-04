@@ -18,15 +18,14 @@ from .models import Profile
 import boto3
 from botocore.config import Config
 
-s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
-
 from .models import Upload, UploadPrivate, Sticker, Collection
 
 
-def presignedurl(key):
-    return s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
-                                                           'Key': key, }, ExpiresIn=100)
+def presignedurl(obj):
+    s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
 
+    return s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
+                                                                'Key': obj.type + '/' + obj.desc, }, ExpiresIn=100)
 
 def image_upload(request):
     if request.method == 'POST':
@@ -99,7 +98,7 @@ class ProfileStickersView(APIView):
                 if "stickers" not in collection:
                     collection['stickers'] = []
                 if collection['id'] == sticker.collection_id:
-                    sticker.key = presignedurl(sticker.key)
+                    sticker.key = presignedurl(sticker)
                     collection['stickers'].append(model_to_dict(sticker))
 
         return JsonResponse(list(collections), safe=False)
