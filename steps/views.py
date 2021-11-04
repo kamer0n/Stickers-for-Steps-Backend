@@ -25,7 +25,8 @@ def presignedurl(obj, combined=True):
     try:
         key = obj.key
     except AttributeError:
-        key = obj
+        #key = obj
+        pass
     if not combined:
         key = obj.type + '/' + obj.desc
     s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
@@ -103,7 +104,7 @@ class ProfileStickersView(APIView):
                 if "stickers" not in collection:
                     collection['stickers'] = []
                 if collection['id'] == sticker.collection_id:
-                    sticker.key = presignedurl(sticker)
+                    sticker.key = presignedurl(sticker, combined=False)
                     collection['stickers'].append(model_to_dict(sticker))
 
         return JsonResponse(list(collections), safe=False)
