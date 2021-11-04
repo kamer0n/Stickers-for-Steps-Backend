@@ -22,10 +22,11 @@ from .models import Upload, UploadPrivate, Sticker, Collection
 
 
 def presignedurl(obj):
+    print(obj)
     s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
 
     return s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
-                                                                'Key': obj.type + '/' + obj.desc, }, ExpiresIn=100)
+                                                                'Key': obj }, ExpiresIn=100)
 
 def image_upload(request):
     if request.method == 'POST':
@@ -53,6 +54,7 @@ def image_upload(request):
     else:
         s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
         images = s3.list_objects(Bucket=settings.AWS_STORAGE_BUCKET_NAME)['Contents']
+        print(images)
         images = [presignedurl(image['Key']) for image in images if image['Key'].endswith(('.jpeg', '.jpg', '.png'))]
     return render(request, 'upload.html', {
         'images': images
