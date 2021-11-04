@@ -2,7 +2,7 @@ import json
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core import serializers
 from rest_framework.response import Response
@@ -65,7 +65,7 @@ def friendship_add_friend(request, to_username):
         except AlreadyExistsError as e:
             ctx["errors"] = ["%s" % e]
         else:
-            return redirect("friendship_request_list")
+            return HttpResponse(status=200)
 
     return JsonResponse(ctx, safe=False)
 
