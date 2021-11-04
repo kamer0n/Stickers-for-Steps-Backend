@@ -88,6 +88,8 @@ class UserRecordView(APIView):
 
 class ProfileStickersView(APIView):
 
+
+
     def get(self, request, format=None):
         profile = Profile.objects.get(user=request.user)
         collections = Collection.objects.all()
@@ -97,6 +99,7 @@ class ProfileStickersView(APIView):
                 if "stickers" not in collection:
                     collection['stickers'] = []
                 if collection['id'] == sticker.collection_id:
+                    sticker.key = presignedurl(sticker.key)
                     collection['stickers'].append(model_to_dict(sticker))
 
         return JsonResponse(list(collections), safe=False)
