@@ -47,3 +47,6 @@ class Profile(models.Model):
 
     def get_stickers(self):
         return [x for x in self.stickers.all()]
+
+    def __str__(self):
+        return self.user.username
