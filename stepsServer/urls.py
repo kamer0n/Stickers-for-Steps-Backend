@@ -91,5 +91,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/', include('steps.urls', namespace='api')),
     path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
-    path('api/friendz/', include('friends.urls')),
+    path('api/', include('friends.urls', namespace='friends_api')),
 ]

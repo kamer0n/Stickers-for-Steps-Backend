@@ -11,6 +11,8 @@ from friends.views import (
     FriendsListView,
 )
 
+app_name = 'friends_api'
+
 urlpatterns = [
     path('users/', view=all_users, name="friendship_view_users"),
     path('friends/<slug:username>/', view=FriendsListView.as_view(),
