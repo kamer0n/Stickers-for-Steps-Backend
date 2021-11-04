@@ -22,7 +22,7 @@ from .models import Upload, UploadPrivate, Sticker, Collection
 
 
 def presignedurl(obj, combined=True):
-    key = obj
+    key = obj.key
     if not combined:
         key = obj.type + '/' + obj.desc
     s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
