@@ -22,9 +22,11 @@ from .models import Upload, UploadPrivate, Sticker, Collection
 
 
 def presignedurl(obj, combined=True):
-    key = obj.key
-    if not combined:
-        key = obj.type + '/' + obj.desc
+    try:
+        key = obj.key
+    except AttributeError:
+        if not combined:
+            key = obj.type + '/' + obj.desc
     s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
 
     return s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
