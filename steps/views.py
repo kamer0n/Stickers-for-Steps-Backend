@@ -51,6 +51,7 @@ def image_upload(request):
             'image_url': image_url
         })
     else:
+        s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
         images = s3.list_objects(Bucket=settings.AWS_STORAGE_BUCKET_NAME)['Contents']
         images = [presignedurl(image['Key']) for image in images if image['Key'].endswith(('.jpeg', '.jpg', '.png'))]
     return render(request, 'upload.html', {
