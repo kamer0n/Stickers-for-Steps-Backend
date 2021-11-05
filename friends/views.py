@@ -6,6 +6,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -73,12 +74,13 @@ def friendship_add_friend(request, to_username):
 
 
 @csrf_exempt
-@login_required
 def friendship_accept(request, friendship_request_id):
     """ Accept a friendship request """
     if request.method == "POST":
+        # TODO need to fix this properly
+        user = Token.objects.get(key=request.headers['Authorization']).user
         f_request = get_object_or_404(
-            request.user.friendship_requests_received, id=friendship_request_id
+            user.friendship_requests_received, id=friendship_request_id
         )
         f_request.accept()
         return redirect("friendship_view_friends", username=request.user.username)
