@@ -92,12 +92,13 @@ def friendship_accept(request, friendship_request_id):
 
 @csrf_exempt
 @api_view(('POST',))
-@login_required
 def friendship_reject(request, friendship_request_id):
     """ Reject a friendship request """
+    # TODO need to fix this properly
+    user = Token.objects.get(key=request.headers['Authorization']).user
     if request.method == "POST":
         f_request = get_object_or_404(
-            request.user.friendship_requests_received, id=friendship_request_id
+            user.friendship_requests_received, id=friendship_request_id
         )
         f_request.reject()
         return redirect("friendship_request_list")
