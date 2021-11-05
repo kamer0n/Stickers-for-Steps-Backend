@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -51,6 +52,7 @@ class FriendsListView(APIView):
         return Response(serializer.data)
 
 
+@csrf_exempt
 @api_view(('POST',))
 @login_required
 def friendship_add_friend(request, to_username):
@@ -70,6 +72,7 @@ def friendship_add_friend(request, to_username):
     return JsonResponse(ctx, safe=False)
 
 
+@csrf_exempt
 @login_required
 def friendship_accept(request, friendship_request_id):
     """ Accept a friendship request """
@@ -85,6 +88,7 @@ def friendship_accept(request, friendship_request_id):
     )
 
 
+@csrf_exempt
 @api_view(('POST',))
 @login_required
 def friendship_reject(request, friendship_request_id):
@@ -101,6 +105,7 @@ def friendship_reject(request, friendship_request_id):
     )
 
 
+@csrf_exempt
 @api_view(('POST',))
 @login_required
 def friendship_cancel(request, friendship_request_id):
