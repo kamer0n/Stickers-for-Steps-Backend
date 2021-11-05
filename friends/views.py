@@ -74,11 +74,10 @@ def friendship_add_friend(request, to_username):
 
 
 @csrf_exempt
+@api_view(('POST',))
 def friendship_accept(request, friendship_request_id):
     """ Accept a friendship request """
     if request.method == "POST":
-        # TODO need to fix this properly
-        user = Token.objects.get(key=request.headers['Authorization']).user
         f_request = get_object_or_404(
             user.friendship_requests_received, id=friendship_request_id
         )
@@ -94,11 +93,9 @@ def friendship_accept(request, friendship_request_id):
 @api_view(('POST',))
 def friendship_reject(request, friendship_request_id):
     """ Reject a friendship request """
-    # TODO need to fix this properly
-    user = Token.objects.get(key=request.headers['Authorization']).user
     if request.method == "POST":
         f_request = get_object_or_404(
-            user.friendship_requests_received, id=friendship_request_id
+            request.user.friendship_requests_received, id=friendship_request_id
         )
         f_request.reject()
         return redirect("friendship_request_list")
