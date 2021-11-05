@@ -18,7 +18,15 @@ class FriendshipListSerializer(serializers.ModelSerializer):
 
 
 class FriendshipRequestsSerializer(serializers.ModelSerializer):
+    from_user = serializers.SerializerMethodField()
+    to_user = serializers.SerializerMethodField()
 
     class Meta:
         model = FriendshipRequest
         fields = '__all__'
+
+    def get_from_user(self, context):
+        return context.from_user.username
+
+    def get_to_user(self, context):
+        return context.to_user.username
