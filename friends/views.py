@@ -79,7 +79,7 @@ def friendship_accept(request, friendship_request_id):
     """ Accept a friendship request """
     if request.method == "POST":
         f_request = get_object_or_404(
-            user.friendship_requests_received, id=friendship_request_id
+            request.user.friendship_requests_received, id=friendship_request_id
         )
         f_request.accept()
         return redirect("friendship_view_friends", username=request.user.username)
