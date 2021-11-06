@@ -8,7 +8,7 @@ from friends.views import (
     friendship_request_list,
     friendship_request_list_rejected,
     friendship_requests_detail,
-    FriendsListView,
+    FriendsListView, friendship_delete_friend,
 )
 
 app_name = 'friends_api'
@@ -17,6 +17,9 @@ urlpatterns = [
     path('users/', view=all_users, name="friendship_view_users"),
     path('friends/', view=FriendsListView.as_view(),
         name="friendship_view_friends",
+    ),
+    path('friend/delete/<slug:to_username>/', view=friendship_delete_friend,
+        name="friendship_delete_friends",
     ),
     path('friend/add/<slug:to_username>/', view=friendship_add_friend,
         name="friendship_add_friend",

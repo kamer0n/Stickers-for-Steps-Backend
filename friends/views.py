@@ -75,6 +75,21 @@ def friendship_add_friend(request, to_username):
 
 @csrf_exempt
 @api_view(('POST',))
+def friendship_delete_friend(request, to_username):
+    """ Delete a friend """
+    ctx = {"to_username": to_username}
+
+    if request.method == "POST":
+        to_user = user_model.objects.get(username=to_username)
+        Friend.objects.get(to_user=to_user, from_user=request.user).delete()
+        Friend.objects.get(to_user=request.user, from_user=to_user).delete()
+        return HttpResponse(status=200)
+
+    return JsonResponse(ctx, safe=False)
+
+
+@csrf_exempt
+@api_view(('POST',))
 def friendship_accept(request, friendship_request_id):
     """ Accept a friendship request """
     if request.method == "POST":
@@ -97,7 +112,7 @@ def friendship_reject(request, friendship_request_id):
         f_request = get_object_or_404(
             request.user.friendship_requests_received, id=friendship_request_id
         )
-        f_request.reject()
+        f_request.delete()
         return HttpResponse(status=201)
 
     return redirect(
