@@ -25,7 +25,7 @@ def presignedurl(obj, combined=True):
     try:
         key = obj.key
     except AttributeError:
-        #key = obj
+        key = obj
         pass
     if not combined:
         key = obj.type + '/' + obj.desc

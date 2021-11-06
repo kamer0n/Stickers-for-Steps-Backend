@@ -82,7 +82,7 @@ def friendship_accept(request, friendship_request_id):
             request.user.friendship_requests_received, id=friendship_request_id
         )
         f_request.accept()
-        return redirect("friendship_view_friends", username=request.user.username)
+        return HttpResponse(status=201)
 
     return redirect(
         "friendship_requests_detail", friendship_request_id=friendship_request_id
@@ -98,7 +98,7 @@ def friendship_reject(request, friendship_request_id):
             request.user.friendship_requests_received, id=friendship_request_id
         )
         f_request.reject()
-        return redirect("friendship_request_list")
+        return HttpResponse(status=201)
 
     return redirect(
         "friendship_requests_detail", friendship_request_id=friendship_request_id
@@ -115,7 +115,7 @@ def friendship_cancel(request, friendship_request_id):
             request.user.friendship_requests_sent, id=friendship_request_id
         )
         f_request.cancel()
-        return redirect("friendship_request_list")
+        return HttpResponse(status=200)
 
     return redirect(
         "friendship_requests_detail", friendship_request_id=friendship_request_id
