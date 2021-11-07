@@ -80,7 +80,9 @@ def friendship_delete_friend(request, to_username_id):
     ctx = {"to_username": to_username_id}
 
     if request.method == "POST":
-        to_user = user_model.objects.get(id=to_username_id)
+        #user_id = User.objects.get(id=Profile.objects.get(to_username_id))
+        to_user = user_model.objects.get(id=Profile.objects.get(id=to_username_id).user_id)
+        print(to_user)
         Friend.objects.get(to_user=to_user, from_user=request.user).delete()
         Friend.objects.get(to_user=request.user, from_user=to_user).delete()
         return HttpResponse(status=200)
