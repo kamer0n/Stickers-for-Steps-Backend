@@ -33,20 +33,28 @@ class UploadPrivate(models.Model):
     file = models.FileField(storage=PrivateMediaStorage())
 
 
+class StickerQuantity(models.Model):
+    sticker = models.OneToOneField(Sticker, on_delete=models.CASCADE)
+    quantity = models.IntegerField(verbose_name="quantity")
+
+    class Meta:
+        verbose_name_plural = "Sticker quantities"
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phonenumber = models.CharField(verbose_name="phone number", max_length=10, null=True)
     birthdate = models.DateField(verbose_name="birth date", null=True)
-    stickers = models.ManyToManyField(Sticker, related_name='stickers', null=True)
+    stickers = models.ManyToManyField(StickerQuantity, related_name='stickers')
 
     def get_sticker_id(self):
-        return [x.id for x in self.stickers.all()]
+        return [x.sticker.id for x in self.stickers.all()]
 
     def get_sticker_collection_id(self):
-        return [x.collection_id for x in self.stickers.all()]
+        return [x.sticker.collection_id for x in self.stickers.all()]
 
     def get_stickers(self):
         return [x for x in self.stickers.all()]
 
     def __str__(self):
         return self.user.username
+

@@ -39,7 +39,8 @@ def delete_friendships():
     user = get_object_or_404(user_model, username='admin')
     friends = Friend.objects.friends(user=user)
     for friend in friends:
-        friend.remove()
+        friend.delete()
+
 
 if __name__ == '__main__':
     print('Starting population script...', end="")
