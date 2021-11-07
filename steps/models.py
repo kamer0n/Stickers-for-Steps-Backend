@@ -53,7 +53,7 @@ class Profile(models.Model):
         return [x.sticker.collection_id for x in self.stickers.all()]
 
     def get_stickers(self):
-        return [x for x in self.stickers.all()]
+        return [x.sticker for x in self.stickers.all()]
 
     def __str__(self):
         return self.user.username
