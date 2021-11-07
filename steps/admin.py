@@ -7,7 +7,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'phonenumber', 'birthdate', 'collected_stickers')
 
     def collected_stickers(self, obj):
-        return "\n".join([a.sticker.name for a in obj.stickers.all()])
+        return "\n".join([a.name for a in obj.get_stickers()])
 
 
 class UploadAdmin(admin.ModelAdmin):
@@ -27,7 +27,7 @@ class CollectionAdmin(admin.ModelAdmin):
 
 
 class StickerQuantityAdmin(admin.ModelAdmin):
-    list_display = ('sticker', 'quantity',)
+    list_display = ('profile', 'sticker', 'quantity',)
 
 
 admin.site.register(Profile, ProfileAdmin)

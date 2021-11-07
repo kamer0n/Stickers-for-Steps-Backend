@@ -100,7 +100,6 @@ class ProfileStickersView(APIView):
         collections = Collection.objects.all()
         collections = list(collections.values())
         for sticker in profile.get_stickers():
-            print(sticker)
             for collection in collections:
                 if "stickers" not in collection:
                     collection['stickers'] = []
