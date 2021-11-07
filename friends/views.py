@@ -56,12 +56,12 @@ class FriendsListView(APIView):
 @csrf_exempt
 @api_view(('POST',))
 @login_required
-def friendship_add_friend(request, to_username_id):
+def friendship_add_friend(request, to_username):
     """ Create a FriendshipRequest """
-    ctx = {"to_username": to_username_id}
+    ctx = {"to_username": to_username}
 
     if request.method == "POST":
-        to_user = user_model.objects.get(id=to_username_id)
+        to_user = user_model.objects.get(id=to_username)
         from_user = request.user
         try:
             Friend.objects.add_friend(from_user, to_user)

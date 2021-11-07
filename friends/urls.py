@@ -21,7 +21,7 @@ urlpatterns = [
     path('friend/delete/<slug:to_username_id>/', view=friendship_delete_friend,
         name="friendship_delete_friends",
     ),
-    path('friend/add/<slug:to_username_id>/', view=friendship_add_friend,
+    path('friend/add/<slug:to_username>/', view=friendship_add_friend,
         name="friendship_add_friend",
     ),
     path('friend/accept/<int:friendship_request_id>/', view=friendship_accept,
