@@ -56,12 +56,12 @@ class FriendsListView(APIView):
 @csrf_exempt
 @api_view(('POST',))
 @login_required
-def friendship_add_friend(request, to_username):
+def friendship_add_friend(request, to_username_id):
     """ Create a FriendshipRequest """
-    ctx = {"to_username": to_username}
+    ctx = {"to_username": to_username_id}
 
     if request.method == "POST":
-        to_user = user_model.objects.get(username=to_username)
+        to_user = user_model.objects.get(id=to_username_id)
         from_user = request.user
         try:
             Friend.objects.add_friend(from_user, to_user)
@@ -75,12 +75,12 @@ def friendship_add_friend(request, to_username):
 
 @csrf_exempt
 @api_view(('POST',))
-def friendship_delete_friend(request, to_username):
+def friendship_delete_friend(request, to_username_id):
     """ Delete a friend """
-    ctx = {"to_username": to_username}
+    ctx = {"to_username": to_username_id}
 
     if request.method == "POST":
-        to_user = user_model.objects.get(username=to_username)
+        to_user = user_model.objects.get(id=to_username_id)
         Friend.objects.get(to_user=to_user, from_user=request.user).delete()
         Friend.objects.get(to_user=request.user, from_user=to_user).delete()
         return HttpResponse(status=200)
