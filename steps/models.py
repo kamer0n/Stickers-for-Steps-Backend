@@ -35,9 +35,9 @@ class UploadPrivate(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phonenumber = models.CharField(verbose_name="phone number", max_length=10)
-    birthdate = models.DateField(verbose_name="birth date")
-    stickers = models.ManyToManyField(Sticker, related_name='stickers')
+    phonenumber = models.CharField(verbose_name="phone number", max_length=10, blank=True)
+    birthdate = models.DateField(verbose_name="birth date", blank=True)
+    stickers = models.ManyToManyField(Sticker, related_name='stickers', blank=True)
 
     def get_sticker_id(self):
         return [x.id for x in self.stickers.all()]
