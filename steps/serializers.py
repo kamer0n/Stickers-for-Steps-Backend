@@ -51,6 +51,13 @@ class CollectionSerializer(serializers.ModelSerializer):
         fields = ('name', 'id', 'stickers',)
 
 
+class JustCollectionsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Collection
+        fields = "__all__"
+
+
 class UserStickerSerializer(serializers.ModelSerializer):
     #sticker = StickerSerializer(many=True)
 

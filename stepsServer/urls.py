@@ -12,6 +12,7 @@ from rest_framework import routers, serializers, viewsets
 import boto3
 from botocore.config import Config
 
+from steps.serializers import JustCollectionsSerializer
 from steps.views import image_upload
 
 
@@ -63,10 +64,10 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 class CollectionViewSet(viewsets.ModelViewSet):
     queryset = Collection.objects.all()
-    serializer_class = CollectionSerializer
+    serializer_class = JustCollectionsSerializer
 
-    def list(self, request, *args, **kwargs):
-        return Response([self.serializer_class])
+    #def list(self, request, *args, **kwargs):
+        #return Response([self.serializer_class])
 
 
 class StickerViewSet(viewsets.ModelViewSet):
