@@ -2,6 +2,7 @@ import base64
 from urllib.request import urlopen
 
 import boto3
+import requests
 from botocore.config import Config
 from django.contrib.auth.models import User
 
@@ -52,8 +53,9 @@ class AllStickerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_key(self, obj):
-        return self.s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
+        url = self.s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
                                                                     'Key': obj.type+'/'+obj.desc, }, ExpiresIn=100)
+        return str(base64.b64encode(requests.get(url).content).decode("utf-8"))
 
 
 class CollectionSerializer(serializers.ModelSerializer):

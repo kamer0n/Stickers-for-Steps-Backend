@@ -109,7 +109,7 @@ class ProfileStickersView(APIView):
                     collection['stickers'] = []
                 if collection['id'] == sticker.collection_id:
                     url = presignedurl(sticker, combined=False)
-                    sticker.key = str(base64.b64encode(requests.get(url).content).decode("utf-8")   )
+                    sticker.key = str(base64.b64encode(requests.get(url).content).decode("utf-8"))
                     collection['stickers'].append(model_to_dict(sticker))
 
         return JsonResponse(list(collections), safe=False)
