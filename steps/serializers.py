@@ -80,11 +80,11 @@ class JustCollectionsSerializer(serializers.ModelSerializer):
 
 
 class UserStickerSerializer(serializers.ModelSerializer):
-    #sticker = StickerSerializer(many=True)
+    id = serializers.SerializerMethodField()
 
     class Meta:
-        ordering = ['collection']
-        model = Profile
-        fields = ('stickers',)
-        depth = 1
+        model = Sticker
+        fields = ('id',)
 
+    def get_id(self, obj):
+        return obj.id

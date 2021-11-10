@@ -99,20 +99,28 @@ class UserRecordView(APIView):
 
 class ProfileStickersView(APIView):
 
-    def get(self, request, format=None):
-        profile = Profile.objects.get(user=request.user)
-        collections = Collection.objects.all()
-        collections = list(collections.values())
-        for sticker in profile.get_stickers():
-            for collection in collections:
-                if "stickers" not in collection:
-                    collection['stickers'] = []
-                if collection['id'] == sticker.collection_id:
-                    url = presignedurl(sticker, combined=False)
-                    sticker.key = str(base64.b64encode(requests.get(url).content).decode("utf-8"))
-                    collection['stickers'].append(model_to_dict(sticker))
+    # def get(self, request, format=None):
+    #     profile = Profile.objects.get(user=request.user)
+    #     collections = Collection.objects.all()
+    #     collections = list(collections.values())
+    #     for sticker in profile.get_stickers():
+    #         for collection in collections:
+    #             if "stickers" not in collection:
+    #                 collection['stickers'] = []
+    #             if collection['id'] == sticker.collection_id:
+    #                 url = presignedurl(sticker, combined=False)
+    #                 sticker.key = str(base64.b64encode(requests.get(url).content).decode("utf-8"))
+    #                 collection['stickers'].append(model_to_dict(sticker))
+    #
+    #     return JsonResponse(list(collections), safe=False)
 
-        return JsonResponse(list(collections), safe=False)
+    def get(self, format=None):
+        profile = Profile.objects.get(user=self.request.user)
+        #print(profile.get_stickers())
+        serializer = UserStickerSerializer(profile.get_stickers(), many=True)
+        print(serializer.data)
+        return Response(serializer.data)
+
 
 
 class AllStickersView(APIView):
