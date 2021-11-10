@@ -4,7 +4,8 @@ from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from .serializers import UserSerializer, UserStickerSerializer, CollectionSerializer
+from .serializers import UserSerializer, UserStickerSerializer, CollectionSerializer, StickerSerializer, \
+    AllStickerSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -114,3 +115,8 @@ class ProfileStickersView(APIView):
         return JsonResponse(list(collections), safe=False)
 
 
+class AllStickersView(APIView):
+    def get(self, format=None):
+        stickers = Sticker.objects.all()
+        serializer = AllStickerSerializer(stickers, many=True)
+        return Response(serializer.data)

@@ -1,11 +1,14 @@
 import base64
 from urllib.request import urlopen
 
+import boto3
+from botocore.config import Config
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
+from stepsServer import settings
 from .models import Profile, Sticker, Collection
 
 
@@ -38,6 +41,19 @@ class StickerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sticker
         fields = ['id', 'key', 'type', 'desc', 'name', 'rarity', 'collection']
+
+
+class AllStickerSerializer(serializers.ModelSerializer):
+    s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
+    key = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Sticker
+        fields = '__all__'
+
+    def get_key(self, obj):
+        return self.s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
+                                                                    'Key': obj.type+'/'+obj.desc, }, ExpiresIn=100)
 
 
 class CollectionSerializer(serializers.ModelSerializer):
