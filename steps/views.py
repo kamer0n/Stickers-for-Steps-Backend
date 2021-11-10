@@ -42,6 +42,7 @@ def image_upload(request):
     if request.method == 'POST':
         image_file = request.FILES['image_file']
         image_type = request.POST['image_type']
+        collection = request.POST['collections']
         if settings.USE_S3:
             if image_type == 'private':
                 upload = UploadPrivate(file=image_file)
@@ -51,7 +52,7 @@ def image_upload(request):
             upload.save()
             image_url = upload.file.url
             sticker = Sticker(key=upload.file, desc=str(upload.file),
-                              name=image_file, collection=Collection.objects.get(id=1),
+                              name=image_file, collection=Collection.objects.get(name=collection),
                               type=image_type)
             sticker.save()
         else:
