@@ -15,6 +15,9 @@ from django.contrib.auth.models import User
 
 from .models import Profile
 
+import base64
+import requests
+
 import boto3
 from botocore.config import Config
 
@@ -104,7 +107,8 @@ class ProfileStickersView(APIView):
                 if "stickers" not in collection:
                     collection['stickers'] = []
                 if collection['id'] == sticker.collection_id:
-                    sticker.key = presignedurl(sticker, combined=False)
+                    url = presignedurl(sticker, combined=False)
+                    sticker.key = str(base64.b64encode(requests.get(url).content).decode("utf-8")   )
                     collection['stickers'].append(model_to_dict(sticker))
 
         return JsonResponse(list(collections), safe=False)

@@ -1,4 +1,8 @@
+import base64
+from urllib.request import urlopen
+
 from django.contrib.auth.models import User
+
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -30,7 +34,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class StickerSerializer(serializers.ModelSerializer):
-    #key = serializers.SerializerMethodField()
 
     class Meta:
         model = Sticker

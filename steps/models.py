@@ -6,6 +6,7 @@ from steps.storage_backends import PublicMediaStorage, PrivateMediaStorage
 
 class Collection(models.Model):
     name = models.CharField(max_length=100)
+    version = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name
