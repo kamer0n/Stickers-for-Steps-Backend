@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from simple_history.models import HistoricalRecords
+
 from steps.storage_backends import PublicMediaStorage, PrivateMediaStorage
 
 
@@ -34,11 +36,19 @@ class UploadPrivate(models.Model):
     file = models.FileField(storage=PrivateMediaStorage())
 
 
+class Steps(models.Model):
+    steps = models.IntegerField(verbose_name="steps")
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return str(self.steps)
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phonenumber = models.CharField(verbose_name="phone number", max_length=10, null=True)
     birthdate = models.DateField(verbose_name="birth date", null=True)
-    #stickers = models.ManyToManyField(StickerQuantity, related_name='stickers')
+    steps = models.OneToOneField(Steps, on_delete=models.CASCADE, null=True)
 
     def get_sticker_id(self):
         return [x.sticker.id for x in StickerQuantity.objects.filter(profile=self)]

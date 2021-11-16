@@ -4,7 +4,7 @@ from steps.models import *
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'phonenumber', 'birthdate', 'collected_stickers')
+    list_display = ('user', 'phonenumber', 'birthdate', 'collected_stickers', 'steps')
 
     def collected_stickers(self, obj):
         return "\n".join([a.name for a in obj.get_stickers()])
@@ -30,9 +30,14 @@ class StickerQuantityAdmin(admin.ModelAdmin):
     list_display = ('profile', 'sticker', 'quantity',)
 
 
+class StepsAdmin(admin.ModelAdmin):
+    list_display = ('steps', 'history')
+
+
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Upload, UploadAdmin)
 admin.site.register(UploadPrivate, UploadPrivateAdmin)
 admin.site.register(Sticker, StickerAdmin)
 admin.site.register(Collection, CollectionAdmin)
 admin.site.register(StickerQuantity, StickerQuantityAdmin)
+admin.site.register(Steps, StepsAdmin)
