@@ -38,6 +38,7 @@ class UploadPrivate(models.Model):
 
 class Steps(models.Model):
     steps = models.IntegerField(verbose_name="steps")
+    stickers_received = models.IntegerField(verbose_name="stickers received")
     history = HistoricalRecords()
 
     def __str__(self):

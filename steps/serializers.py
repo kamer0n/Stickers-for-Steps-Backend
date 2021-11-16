@@ -66,7 +66,6 @@ class CollectionSerializer(serializers.ModelSerializer):
     def get_stickers(self, wow=''):
         obtained_stickers = StickerSerializer(Sticker.objects.filter(
             id__in=self.context['profile'].first().get_sticker_id()), many=True).data
-        print(obtained_stickers)
         return obtained_stickers
 
     class Meta:
