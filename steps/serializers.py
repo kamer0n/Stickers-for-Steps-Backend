@@ -10,14 +10,16 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from stepsServer import settings
-from .models import Profile, Sticker, Collection
+from .models import Profile, Sticker, Collection, Steps
 
 
 class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
-        Profile.objects.create(user=user)
+        steps = Steps.objects.create(steps=0)
+        Profile.objects.create(user=user, steps=steps)
+
         return user
 
     class Meta:
