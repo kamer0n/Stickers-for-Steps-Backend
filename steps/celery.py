@@ -1,7 +1,7 @@
 import os
 from django.conf import settings
 from celery.schedules import crontab
-import tasks
+from tasks import clearStepsAndSticker
 
 from celery import Celery
 
@@ -24,8 +24,8 @@ app.autodiscover_tasks(settings.INSTALLED_APPS)
 app.conf.beat_schedule = {
     # Executes every day at  12:30 pm.
     'run-every-afternoon': {
-        'task': 'tasks.clearStepsAndSticker',
-        'schedule': crontab(hour=00, minute=57),
+        'task': 'clearStepsAndSticker',
+        'schedule': crontab(hour=00, minute=58),
         'args': (),
     },
 }
