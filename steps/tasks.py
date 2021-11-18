@@ -2,7 +2,7 @@ from celery import shared_task
 from celery import Celery
 from celery.schedules import crontab
 
-from models import Steps
+from .models import Steps
 
 app = Celery()
 
