@@ -15,7 +15,7 @@ def setup_periodic_tasks(sender, **kwargs):
     )
 
 
-@shared_task()
+@celery.task()
 def clearStepsAndSticker():
     for steps in Steps.objects.all():
         steps.steps = 0

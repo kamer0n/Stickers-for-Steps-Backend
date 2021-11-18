@@ -1,6 +1,6 @@
 import os
 from django.conf import settings
-
+from celery.schedules import crontab
 
 from celery import Celery
 
@@ -20,6 +20,11 @@ app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(settings.INSTALLED_APPS)
 
 
-@app.task(bind=True)
-def debug_task(self):
-    print(f'Request: {self.request!r}')
+app.conf.beat_schedule = {
+    # Executes every day at  12:30 pm.
+    'run-every-afternoon': {
+        'task': 'tasks.clearStepsAndSticker',
+        'schedule': crontab(hour=00, minute=56),
+        'args': (),
+    },
+}
