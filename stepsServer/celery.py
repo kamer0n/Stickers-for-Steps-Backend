@@ -1,4 +1,5 @@
 import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stepServer.settings')
 from django.conf import settings
 from celery.schedules import crontab
 
@@ -7,7 +8,6 @@ from steps.tasks import clearStepsAndSticker
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 
 
 app = Celery('steps')
