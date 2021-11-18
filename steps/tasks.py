@@ -10,12 +10,12 @@ app = Celery()
 def setup_periodic_tasks(sender, **kwargs):
 
     sender.add_periodic_task(
-        crontab(minute=48, hour=0),
+        crontab(minute=59, hour=0),
         clearStepsAndSticker.s(),
     )
 
 
-@celery.task()
+@shared_task
 def clearStepsAndSticker():
     for steps in Steps.objects.all():
         steps.steps = 0
