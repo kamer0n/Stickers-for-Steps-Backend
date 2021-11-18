@@ -1,9 +1,10 @@
 import os
 from django.conf import settings
 from celery.schedules import crontab
-#from tasks import clearStepsAndSticker
 
-from celery import Celery
+from steps.models import Steps
+
+from celery import Celery, shared_task
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stepsServer.settings')
@@ -24,8 +25,16 @@ app.autodiscover_tasks(settings.INSTALLED_APPS)
 app.conf.beat_schedule = {
     # Executes every day at  12:30 pm.
     'run-every-afternoon': {
-        'task': 'tasks.clearStepsAndSticker',
-        'schedule': crontab(hour=00, minute=58),
+        'task': 'clearStepsAndSticker',
+        'schedule': crontab(hour=1, minute=3),
         'args': (),
     },
 }
+
+
+@shared_task
+def clearStepsAndSticker():
+    for steps in Steps.objects.all():
+        steps.steps = 0
+        steps.stickers_received = 0
+        steps.save()
