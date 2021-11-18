@@ -1,10 +1,11 @@
 import os
 from django.conf import settings
+from stepsServer import settings as othersettings
 
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', os.getenv('DJANGO_SETTINGS_MODULE'))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'othersettings')
 
 
 app = Celery('steps')
