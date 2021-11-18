@@ -26,15 +26,8 @@ app.conf.beat_schedule = {
     # Executes every day at  12:30 pm.
     'run-every-afternoon': {
         'task': 'clearStepsAndSticker',
-        'schedule': crontab(hour=1, minute=4),
+        'schedule': crontab(hour=1, minute=3),
         'args': (),
     },
 }
 
-
-@shared_task
-def clearStepsAndSticker():
-    for steps in Steps.objects.all():
-        steps.steps = 0
-        steps.stickers_received = 0
-        steps.save()
