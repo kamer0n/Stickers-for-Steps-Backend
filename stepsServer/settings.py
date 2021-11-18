@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'friendship',
     'storages',
     'simple_history',
+    'celery',
 ]
 
 MIDDLEWARE = [
