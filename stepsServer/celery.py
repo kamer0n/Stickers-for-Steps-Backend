@@ -7,7 +7,7 @@ from steps.tasks import clearStepsAndSticker
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stepsServer.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 
 
 app = Celery('steps')
