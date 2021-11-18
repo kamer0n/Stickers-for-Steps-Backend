@@ -10,7 +10,7 @@ app = Celery()
 def setup_periodic_tasks(sender, **kwargs):
 
     sender.add_periodic_task(
-        crontab(minute=41, hour=0),
+        crontab(minute=46, hour=0),
         clearStepsAndSticker.s(),
     )
 
