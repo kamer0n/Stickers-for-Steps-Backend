@@ -26,7 +26,7 @@ app.conf.beat_schedule = {
     # Executes every day at  12:30 pm.
     'run-every-afternoon': {
         'task': 'steps.tasks.clearStepsAndSticker',
-        'schedule': crontab(hour=00, minute=57),
+        'schedule': crontab(hour=1, minute=16),
         'args': (),
     },
 }
