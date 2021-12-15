@@ -259,6 +259,8 @@ class LeaderboardView(APIView):
             already_friends = False
             if profile.user in friends_list:
                 already_friends = True
+            elif profile.user == current:
+                already_friends = 'self'
             if profile.get_sticker_count() != 0:
                 board.append({'name': profile.user.username, 'count': profile.get_sticker_count(), 'friends': already_friends})
         board = sorted(board, key=lambda d: d['count'], reverse=True)
