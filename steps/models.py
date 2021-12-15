@@ -60,6 +60,9 @@ class Profile(models.Model):
     def get_stickers(self):
         return [x.sticker for x in StickerQuantity.objects.filter(profile=self)]
 
+    def get_sticker_count(self):
+        return len(StickerQuantity.objects.filter(profile=self))
+
     def __str__(self):
         return self.user.username
 

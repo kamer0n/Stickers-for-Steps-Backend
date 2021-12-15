@@ -89,3 +89,5 @@ class UserStickerSerializer(serializers.ModelSerializer):
 
     def get_id(self, obj):
         return obj.id
+
+

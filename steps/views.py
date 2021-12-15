@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Prefetch
 from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
@@ -113,6 +114,8 @@ from rest_framework.authtoken.models import Token
 
 from rest_framework.permissions import IsAdminUser
 from django.contrib.auth.models import User
+
+from friendship.models import Friend
 
 from .models import Profile
 
@@ -242,3 +245,23 @@ class StepsView(APIView):
             profile.steps.save()
         return Response(response)
 
+
+class LeaderboardView(APIView):
+
+    def post(self, format=None):
+        profiles = Profile.objects.all()
+        current = Profile.objects.get(user=self.request.user)
+        print(current)
+        friends_list = Friend.objects.friends(self.request.user)
+        print(friends_list)
+        board = []
+        for profile in profiles:
+            already_friends = False
+            if profile.user in friends_list:
+                already_friends = True
+            if profile.get_sticker_count() != 0:
+                board.append({'name': profile.user.username, 'count': profile.get_sticker_count(), 'friends': already_friends})
+        board = sorted(board, key=lambda d: d['count'], reverse=True)
+        return Response(board)
+
+        #profiles

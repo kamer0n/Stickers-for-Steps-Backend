@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserRecordView, ProfileStickersView, AllStickersView, StepsView
+from .views import UserRecordView, ProfileStickersView, AllStickersView, StepsView, LeaderboardView
 
 app_name = 'steps'
 urlpatterns = [
@@ -7,4 +7,5 @@ urlpatterns = [
     path('usersticks/', ProfileStickersView.as_view(), name='stickers'),
     path('allstickers/', AllStickersView.as_view(), name='allstickers'),
     path('sendsteps/', StepsView.as_view(), name='stepsview'),
+    path('leaderboard/', LeaderboardView.as_view(), name='leaderboardview'),
 ]
