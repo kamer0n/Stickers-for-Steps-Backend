@@ -206,12 +206,31 @@ class UserRecordView(APIView):
 
 class ProfileStickersView(APIView):
 
-    def get(self, format=None):
-        profile = Profile.objects.get(user=self.request.user)
+    def post(self, format=None):
+        exists = False
+        print(self.request.data)
+        try:
+            exists = self.request.data['user']
+            collection = self.request.data['collection']
+        except Exception as e:
+            print(e)
+        if exists:
+            profile = Profile.objects.get(user=User.objects.get(username=exists))
+            #sticks = profile.get_stickers_by_collection(collection)
+            sticks = [Sticker.objects.get(id=10)]
+            serializer = UserStickerSerializer(sticks, many=True)
+            print('here')
+            #colls = sorted(profile.get_stickers(), key=lambda d: d.collection_id)
+
+            return Response(serializer.data)
+        else:
+            profile = Profile.objects.get(user=self.request.user)
+            serializer = UserStickerSerializer(profile.get_stickers(), many=True)
+            return Response(serializer.data)
         #print(profile.get_stickers())
-        serializer = UserStickerSerializer(profile.get_stickers(), many=True)
-        print(serializer.data)
-        return Response(serializer.data)
+        #serializer = UserStickerSerializer(profile.get_stickers(), many=True)
+        #print(serializer.data)
+        #return Response(serializer.data)
 
 
 

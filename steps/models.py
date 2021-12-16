@@ -60,6 +60,9 @@ class Profile(models.Model):
     def get_stickers(self):
         return [x.sticker for x in StickerQuantity.objects.filter(profile=self)]
 
+    def get_stickers_by_collection(self, coll_id):
+        return [x.sticker for x in StickerQuantity.objects.filter(profile=self) if coll_id == x.sticker.collection.id]
+
     def get_sticker_count(self):
         return len(StickerQuantity.objects.filter(profile=self))
 

@@ -63,14 +63,15 @@ class AllStickerSerializer(serializers.ModelSerializer):
 class CollectionSerializer(serializers.ModelSerializer):
     stickers = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Collection
+        fields = ('name', 'id', 'stickers',)
+
     def get_stickers(self, wow=''):
         obtained_stickers = StickerSerializer(Sticker.objects.filter(
             id__in=self.context['profile'].first().get_sticker_id()), many=True).data
         return obtained_stickers
 
-    class Meta:
-        model = Collection
-        fields = ('name', 'id', 'stickers',)
 
 
 class JustCollectionsSerializer(serializers.ModelSerializer):
