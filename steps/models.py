@@ -55,13 +55,17 @@ class Profile(models.Model):
         return [x.sticker.id for x in StickerQuantity.objects.filter(profile=self)]
 
     def get_sticker_collection_id(self):
-        return [x.sticker.collection_id for x in StickerQuantity.objects.filter(profile=self)]
+        stickers = StickerQuantity.objects.filter(profile=self)
+        return [x.sticker.collection_id for x in stickers]
 
     def get_stickers(self):
         return [x.sticker for x in StickerQuantity.objects.filter(profile=self)]
 
+    def get_stickers_and_quantities(self):
+        return [(x.sticker.id, x.quantity) for x in StickerQuantity.objects.filter(profile=self)]
+
     def get_stickers_by_collection(self, coll_id):
-        return [x.sticker for x in StickerQuantity.objects.filter(profile=self) if coll_id == x.sticker.collection.id]
+        return [(x.sticker.id, x.quantity) for x in StickerQuantity.objects.filter(profile=self) if coll_id == x.sticker.collection.id]
 
     def get_sticker_count(self):
         return len(StickerQuantity.objects.filter(profile=self))

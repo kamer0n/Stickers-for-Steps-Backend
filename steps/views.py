@@ -217,14 +217,14 @@ class ProfileStickersView(APIView):
         if exists:
             profile = Profile.objects.get(user=User.objects.get(username=exists))
             sticks = profile.get_stickers_by_collection(collection)
+            print(sticks)
             serializer = UserStickerSerializer(sticks, many=True)
-            print('here')
             #colls = sorted(profile.get_stickers(), key=lambda d: d.collection_id)
 
             return Response(serializer.data)
         else:
             profile = Profile.objects.get(user=self.request.user)
-            serializer = UserStickerSerializer(profile.get_stickers(), many=True)
+            serializer = UserStickerSerializer(profile.get_stickers_and_quantities(), many=True)
             return Response(serializer.data)
         #print(profile.get_stickers())
         #serializer = UserStickerSerializer(profile.get_stickers(), many=True)

@@ -83,12 +83,16 @@ class JustCollectionsSerializer(serializers.ModelSerializer):
 
 class UserStickerSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
+    quantity = serializers.SerializerMethodField()
 
     class Meta:
         model = Sticker
-        fields = ('id',)
+        fields = ('id', 'quantity')
 
     def get_id(self, obj):
-        return obj.id
+        return obj[0]
+
+    def get_quantity(self, obj):
+        return obj[1]
 
 
