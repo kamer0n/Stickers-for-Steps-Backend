@@ -248,8 +248,14 @@ class StepsView(APIView):
         profile.steps.save()
         received = profile.steps.stickers_received
         response = {"target": str(500 << received)}
-        if (profile.steps.steps > (500 << received)):
-            stickers = list(Sticker.objects.all())
+        if profile.steps.steps > (500 << received):
+            roll = random.randint(0, 100)
+            if 0 <= roll <= 50: rarity = 0
+            elif 50 < roll <= 75: rarity = 1
+            elif 75 < roll <= 90: rarity = 2
+            elif 90 < roll <= 100: rarity = 3
+            else: rarity = 0
+            stickers = list(Sticker.objects.filter(rarity=rarity))
             new_sticker = random.choice(stickers)
             if StickerQuantity.objects.filter(profile=profile, sticker=new_sticker).exists():
                 sq = StickerQuantity.objects.get(profile=profile, sticker=new_sticker)
