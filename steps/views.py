@@ -45,6 +45,8 @@ def image_upload(request):
         image_file = request.FILES['image_file']
         image_type = request.POST['image_type']
         collection = request.POST['collections']
+        rarity = request.POST['rarity']
+        print(rarity)
         if settings.USE_S3:
             if image_type == 'private':
                 upload = UploadPrivate(file=image_file)
@@ -55,7 +57,7 @@ def image_upload(request):
             image_url = upload.file.url
             sticker = Sticker(key=upload.file, desc=str(upload.file),
                               name=image_file, collection=Collection.objects.get(name=collection),
-                              type=image_type)
+                              type=image_type, rarity=rarity)
             sticker.save()
         else:
             fs = FileSystemStorage()
@@ -148,6 +150,8 @@ def image_upload(request):
         image_file = request.FILES['image_file']
         image_type = request.POST['image_type']
         collection = request.POST['collections']
+        rarity = request.POST['rarity']
+        desc = request.POST['desc']
         if settings.USE_S3:
             if image_type == 'private':
                 upload = UploadPrivate(file=image_file)
@@ -157,8 +161,8 @@ def image_upload(request):
             upload.save()
             image_url = upload.file.url
             sticker = Sticker(key=upload.file, desc=str(upload.file),
-                              name=image_file, collection=Collection.objects.get(name=collection),
-                              type=image_type)
+                              name=desc, collection=Collection.objects.get(name=collection),
+                              type=image_type, rarity=rarity)
             sticker.save()
         else:
             fs = FileSystemStorage()
