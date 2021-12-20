@@ -56,7 +56,7 @@ class AllStickerSerializer(serializers.ModelSerializer):
 
     def get_key(self, obj):
         url = self.s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
-                                                                    'Key': obj.type+'/'+obj.desc, }, ExpiresIn=100)
+                                                                    'Key': obj.type+'/'+obj.key, }, ExpiresIn=100)
         return str(base64.b64encode(requests.get(url).content).decode("utf-8"))
 
 
