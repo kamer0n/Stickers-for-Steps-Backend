@@ -62,6 +62,7 @@ class AllStickerSerializer(serializers.ModelSerializer):
 
 class CollectionSerializer(serializers.ModelSerializer):
     stickers = serializers.SerializerMethodField()
+    icon = serializers.SerializerMethodField()
 
     class Meta:
         model = Collection
@@ -75,10 +76,17 @@ class CollectionSerializer(serializers.ModelSerializer):
 
 
 class JustCollectionsSerializer(serializers.ModelSerializer):
+    icon = serializers.SerializerMethodField()
 
     class Meta:
         model = Collection
         fields = "__all__"
+
+    def get_icon(self, obj):
+        s3 = boto3.client('s3', config=Config(signature_version='s3v4', region_name='eu-west-2'))
+        url = s3.generate_presigned_url('get_object', Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
+                                                                   'Key': 'media' + '/' + obj.icon, }, ExpiresIn=100)
+        return str(base64.b64encode(requests.get(url).content).decode("utf-8"))
 
 
 class UserStickerSerializer(serializers.ModelSerializer):

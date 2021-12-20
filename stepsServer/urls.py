@@ -51,6 +51,7 @@ class CollectionSerializer(serializers.ModelSerializer):
         fields = ('sticker',)
 
 
+
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
