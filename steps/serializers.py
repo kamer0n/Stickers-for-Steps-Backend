@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         steps = Steps.objects.create(steps=0)
-        Profile.objects.create(user=user, steps=steps)
+        Profile.objects.create(user=user, steps=steps, avatar="http://188.166.153.138:3000/api/avataaars/" + user.name + ".svg")
 
         return user
 

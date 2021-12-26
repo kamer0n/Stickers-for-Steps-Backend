@@ -51,6 +51,7 @@ class Profile(models.Model):
     phonenumber = models.CharField(verbose_name="phone number", max_length=10, null=True)
     birthdate = models.DateField(verbose_name="birth date", null=True)
     steps = models.OneToOneField(Steps, on_delete=models.CASCADE, null=True)
+    avatar = models.URLField()
 
     def get_sticker_id(self):
         return [x.sticker.id for x in StickerQuantity.objects.filter(profile=self)]
