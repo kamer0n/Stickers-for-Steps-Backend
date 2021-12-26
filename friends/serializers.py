@@ -7,6 +7,7 @@ from steps.models import Profile
 
 class FriendshipListSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    fluff = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -16,6 +17,12 @@ class FriendshipListSerializer(serializers.ModelSerializer):
     def get_user(self, context):
         return context.user.username
 
+    def get_fluff(self, context):
+        import random
+        choices = [context.user.username + " has walked " + str(context.user.profile.steps.steps) + " steps today!",
+                   context.user.username + " has collected " + str(context.user.profile.steps.stickers_received) + " stickers today!"
+                   ]
+        return random.choice(choices)
 
 class FriendshipRequestsSerializer(serializers.ModelSerializer):
     from_user = serializers.SerializerMethodField()
