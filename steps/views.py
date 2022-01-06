@@ -192,3 +192,20 @@ class LeaderboardView(APIView):
         return Response(board)
 
         #profiles
+
+
+class ChatToken(APIView):
+
+    def post(self, format=None):
+        import stream_chat
+        from os import getenv
+        user = self.request.user
+        api_key = getenv("chatAPI")
+        secret_key = getenv("chatSecret")
+        server_client = stream_chat.StreamChat(api_key=api_key, api_secret=secret_key)
+        token = server_client.create_token(user.username)
+        resp = {"chatToken": token}
+        return Response(resp)
+
+
+
