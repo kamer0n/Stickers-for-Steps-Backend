@@ -200,14 +200,14 @@ class ChatToken(APIView):
         import stream_chat
         from os import getenv
         user = self.request.user
-        profile = Profile.objects.get(user=user)
+        user_id = str(user.id)
         api_key = getenv("chatAPI")
         secret_key = getenv("chatSecret")
         server_client = stream_chat.StreamChat(api_key=api_key, api_secret=secret_key)
-        server_client.update_user({"id": user.id, "role": "guest"})
+        server_client.update_user({"id": user_id, "role": "guest"})
         channel = server_client.channel("lobby", "Lobby")
-        channel.add_members([{"user_id": user.id}])
-        token = server_client.create_token(user.id)
+        channel.add_members([{"user_id": user_id}])
+        token = server_client.create_token(user_id)
         resp = {"chatToken": token}
         return Response(resp)
 
