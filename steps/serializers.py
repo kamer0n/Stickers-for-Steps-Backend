@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         steps = Steps.objects.create(steps=0, stickers_received=0)
         Profile.objects.create(user=user, steps=steps,
-                               avatar="http://188.166.153.138:3000/api/avataaars/" + user.username + ".svg",
+                               avatar="http://188.166.153.138:3000/api/avataaars/" + user.username + ".png",
                                )
 
         return user
