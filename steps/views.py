@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.forms import model_to_dict
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
 from .serializers import UserSerializer, UserStickerSerializer, CollectionSerializer, StickerSerializer, \
-    AllStickerSerializer
+    AllStickerSerializer, TradesSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 
 from friendship.models import Friend
 
-from .models import Profile
+from .models import Profile, Trade, TradeStickerQuantity
 
 import base64
 import requests
@@ -91,17 +91,8 @@ class UserRecordView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=ValueError):
             serializer.create(validated_data=request.data)
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
-            )
-        return Response(
-            {
-                "error": True,
-                "error_msg": serializer.error_messages,
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({"error": True, "error_msg": serializer.error_messages}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -213,3 +204,60 @@ class ChatToken(APIView):
 
 
 
+class TradeView(APIView):
+
+    def get(self, format=None):
+
+        sent_trades = Trade.objects.filter(sender=self.request.user)
+        received_trades = Trade.objects.filter(receiver=self.request.user)
+        sent_serializer = TradesSerializer(sent_trades, many=True)
+        received_serializer = TradesSerializer(received_trades, many=True)
+        trades = {"sent": sent_serializer.data, "received": received_serializer.data}
+        return Response(trades)
+
+    def post(self, format=None):
+        trade = self.request.data
+        trade_id = Trade.objects.get_or_create(
+            sender_id=trade['sender'],
+            receiver_id=trade['receiver'],
+        )
+        print(trade_id)
+        print('da thinky')
+        if not trade_id[1]:
+            return tradeResponses('exists', trade_id[0])
+        for sticker in trade['sender_stickers']:
+            sender_tq = TradeStickerQuantity.objects.get_or_create(
+                connected_trade=trade_id[0],
+                sticker_id=sticker['sticker'],
+                quantity=sticker['quantity'],
+            )
+        for sticker in trade['receiver_stickers']:
+            receiver_tq = TradeStickerQuantity.objects.get_or_create(
+                connected_trade=trade_id[0],
+                sticker_id=sticker['sticker'],
+                quantity=sticker['quantity'],
+            )
+
+        #serializer = TradesSerializer(data=request.data)
+        #if serializer.is_valid(raise_exception=ValueError):
+         #   serializer.create(validated_data=request.data)
+         #   return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response({"error": True, "error_msg": serializer.error_messages}, status=status.HTTP_400_BAD_REQUEST)
+        return HttpResponse(status=200)
+
+class TradeResponseView(APIView):
+
+    def post(self, format=None):
+        #print(request.data)
+        print(self.request.data)
+
+
+        return HttpResponse(status=200)
+
+
+def tradeResponses(resp, *kwargs):
+    if resp == 'exists':
+        return Response(
+            {"message": f"Trade already exists between {kwargs[0].sender.username} and "
+                        f"{kwargs[0].receiver.username}."}
+        )

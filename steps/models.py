@@ -1,3 +1,6 @@
+import datetime
+from django.utils import timezone
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -89,3 +92,41 @@ class StickerQuantity(models.Model):
 
     def __str__(self):
         return self.sticker.name
+
+
+class TradeStickerQuantity(models.Model):
+
+    class SendOrRecv(models.IntegerChoices):
+        SENT = 1, "SENT"
+        RECEIVED = 2, "RECEIVED"
+
+    sticker = models.ForeignKey(Sticker, on_delete=models.CASCADE, related_name='trade_sticker')
+    quantity = models.IntegerField(verbose_name="quantity")
+    connected_trade = models.ForeignKey('Trade', on_delete=models.CASCADE, blank=True, null=True)
+    send_or_recv = models.PositiveSmallIntegerField(choices=SendOrRecv.choices, default=SendOrRecv.SENT)
+
+
+class Trade(models.Model):
+
+    class TradeStatus(models.IntegerChoices):
+        SENT_RECEIVED = 1, "SENT_RECEIVED"
+        ACCEPTED = 2, "ACCEPTED"
+        DECLINED = 3, "DECLINED"
+        COUNTEROFFER = 4, "COUNTER_OFFER"
+
+    sender = models.OneToOneField(User, on_delete=models.CASCADE, related_name='sender')
+    receiver = models.OneToOneField(User, on_delete=models.CASCADE)
+    time_sent = models.DateTimeField(default=timezone.now)
+    trade_status = models.PositiveSmallIntegerField(choices=TradeStatus.choices, default=TradeStatus.SENT_RECEIVED)
+
+    def get_trade_sticker(self):
+        return [x.sticker for x in TradeStickerQuantity.objects.filter(connected_trade=self)]
+
+    def get_sender_stickers(self):
+        return [x.sticker for x in TradeStickerQuantity.objects.filter(connected_trade=self, send_or_recv=1)]
+
+    def get_receiver_stickers(self):
+        return [x.sticker for x in TradeStickerQuantity.objects.filter(connected_trade=self, send_or_recv=2)]
+
+    def __str__(self):
+        return "Trade from {} to {}".format(self.sender.username, self.receiver.username)
