@@ -8,7 +8,6 @@ from .serializers import UserSerializer, UserStickerSerializer, CollectionSerial
     AllStickerSerializer, TradesSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.authtoken.models import Token
 
 from rest_framework.permissions import IsAdminUser
@@ -78,7 +77,6 @@ def image_upload(request):
 
 
 class UserRecordView(APIView):
-
     permission_classes = [IsAdminUser]
 
     def get(self, format=None):
@@ -87,6 +85,7 @@ class UserRecordView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        from rest_framework import status
         print(request.data)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=ValueError):
@@ -149,12 +148,12 @@ class StepsView(APIView):
             else: rarity = 0
             stickers = list(Sticker.objects.filter(rarity=rarity))
             new_sticker = random.choice(stickers)
-            if StickerQuantity.objects.filter(profile=profile, sticker=new_sticker).exists():
-                sq = StickerQuantity.objects.get(profile=profile, sticker=new_sticker)
+            if StickerQuantity.objects.filter(user=self.request.user, sticker=new_sticker).exists():
+                sq = StickerQuantity.objects.get(user=self.request.user, sticker=new_sticker)
                 sq.quantity += 1
                 sq.save()
             else:
-                StickerQuantity.objects.create(profile=profile, sticker=new_sticker, quantity=1)
+                StickerQuantity.objects.create(user=self.request.user, sticker=new_sticker, quantity=1)
             response['sticker'] = StickerSerializer(new_sticker).data
             received += 1
             profile.steps.stickers_received += 1
@@ -221,10 +220,8 @@ class TradeView(APIView):
             sender_id=trade['sender'],
             receiver_id=trade['receiver'],
         )
-        print(trade_id)
-        print('da thinky')
         if not trade_id[1]:
-            return tradeResponses('exists', trade_id[0])
+            return tradeResponses(1, trade_id[0])
         for sticker in trade['sender_stickers']:
             sender_tq = TradeStickerQuantity.objects.get_or_create(
                 connected_trade=trade_id[0],
@@ -249,15 +246,84 @@ class TradeResponseView(APIView):
 
     def post(self, format=None):
         #print(request.data)
-        print(self.request.data)
+        #print(self.request.data)
+        posted_trade = self.request.data
+        trade = Trade.objects.get(id=posted_trade['trade_id'])
+        sender_valid = trade.get_trade_validity('s')
+        receiver_valid = trade.get_trade_validity('r')
+        status = posted_trade['status']
+        if sender_valid == 2:
+            trade.trade_status = 5
+            trade.save()
+            return tradeResponses(2)
+        if receiver_valid == 3:
+            trade.trade_status = 5
+            trade.save()
+            return tradeResponses(3)
+        if (sender_valid == 4) or (receiver_valid == 4):
+            trade.trade_status = 5
+            trade.save()
+            return tradeResponses(4)
+        valid = 2
+        if status == 2:
+            sender_tq = TradeStickerQuantity.objects.filter(connected_trade=trade, send_or_recv=1)
+            receiver_tq = TradeStickerQuantity.objects.filter(connected_trade=trade, send_or_recv=2)
+            updateStickers(trade, sender_tq, 's')
+            updateStickers(trade, receiver_tq, 'r')
+            trade.trade_status = 2
+            trade.save()
+        # elif status == 3:
+        #     trade.tradeStatus = 3
+        #     trade.save()
+        #     return tradeResponses(5)
+        # elif status == 4:
+        #     trade.trade_status = 4
+        #     trade.save()
+        #     return tradeResponses(6)
+        # elif status == 5:
+        #     trade.trade_status = 5
+        #     trade.save()
+        #     return tradeResponses(7)
+        trade.trade_status = status
+        trade.save()
+
+        return tradeResponses(status)
 
 
-        return HttpResponse(status=200)
+def updateStickers(trade, tsq, s_or_r):
+    if s_or_r == 's':
+        user1 = trade.receiver
+        user2 = trade.sender
+    else:
+        user1 = trade.sender
+        user2 = trade.receiver
+
+    for t in tsq:
+        new_sq = StickerQuantity.objects.get_or_create(user=user1, sticker=t.sticker)
+        old_sq = StickerQuantity.objects.get_or_create(user=user2, sticker=t.sticker)
+        if new_sq[1]:
+            new_sq[0].quantity = t.quantity
+        else:
+            new_sq[0].quantity += t.quantity
+        old_sq[0].quantity -= t.quantity
+        new_sq[0].save()
+        old_sq[0].save()
 
 
-def tradeResponses(resp, *kwargs):
-    if resp == 'exists':
-        return Response(
-            {"message": f"Trade already exists between {kwargs[0].sender.username} and "
-                        f"{kwargs[0].receiver.username}."}
-        )
+def tradeResponses(resp, **kwargs):
+    errors = {
+        0: "Trade sent successfully",
+        2: "The sender no longer has the required stickers for the trade",
+        3: "The receiver no longer has the required stickers for the trade",
+        4: "The trade will leave the user with less than 1 sticker which isn't allowed",
+        5: "This trade has been declined.",
+        6: "This trade has been counter-offered.",
+        7: "This trade has become invalid.",
+    }
+    if kwargs is None:
+        errors[1] = f"Trade already exists between {kwargs[0].sender.username} and {kwargs[0].receiver.username}."
+    return Response(
+        {"message": errors[resp]}
+    )
+
+

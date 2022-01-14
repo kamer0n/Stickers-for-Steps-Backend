@@ -28,7 +28,7 @@ class CollectionAdmin(admin.ModelAdmin):
 
 
 class StickerQuantityAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'sticker', 'quantity',)
+    list_display = ('user', 'sticker', 'quantity',)
 
 
 class StepsAdmin(admin.ModelAdmin):
