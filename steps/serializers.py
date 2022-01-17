@@ -92,11 +92,15 @@ class UserStickerSerializer(serializers.ModelSerializer):
 
 
 class TradeSQSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField(source='sticker')
 
     class Meta:
         model = TradeStickerQuantity
-        fields = ("sticker", "quantity")
+        fields = ("id", "quantity")
         #depth = 1
+
+    def get_id(self, obj):
+        return obj.sticker.id
 
 
 class TradesSerializer(serializers.ModelSerializer):
