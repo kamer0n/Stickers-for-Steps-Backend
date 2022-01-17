@@ -106,10 +106,12 @@ class TradeSQSerializer(serializers.ModelSerializer):
 class TradesSerializer(serializers.ModelSerializer):
     sender_stickers = serializers.SerializerMethodField()
     receiver_stickers = serializers.SerializerMethodField()
+    sender_name = serializers.SerializerMethodField()
+    receiver_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Trade
-        fields = ("sender", "receiver", "time_sent", "trade_status", "sender_stickers", "receiver_stickers")
+        fields = ("sender", "sender_name", "receiver_name", "receiver", "time_sent", "trade_status", "sender_stickers", "receiver_stickers")
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
@@ -129,3 +131,9 @@ class TradesSerializer(serializers.ModelSerializer):
         stickers = TradeSQSerializer(stickers, many=True).data
         print(stickers)
         return stickers
+
+    def get_sender_name(self, obj):
+        return obj.sender.username
+
+    def get_receiver_name(self, obj):
+        return obj.receiver.username
