@@ -248,10 +248,10 @@ class TradeResponseView(APIView):
         #print(request.data)
         #print(self.request.data)
         posted_trade = self.request.data
-        trade = Trade.objects.get(id=posted_trade['trade_id'])
+        trade = Trade.objects.get(id=int(posted_trade['trade_id']))
         sender_valid = trade.get_trade_validity('s')
         receiver_valid = trade.get_trade_validity('r')
-        status = posted_trade['status']
+        status = int(posted_trade['status'])
         if sender_valid == 2:
             trade.trade_status = 5
             trade.save()
