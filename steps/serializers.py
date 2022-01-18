@@ -111,7 +111,7 @@ class TradesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trade
-        fields = ("sender", "sender_name", "receiver_name", "receiver", "time_sent", "trade_status", "sender_stickers", "receiver_stickers")
+        fields = ("id", "sender", "sender_name", "receiver_name", "receiver", "time_sent", "trade_status", "sender_stickers", "receiver_stickers")
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
