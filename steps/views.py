@@ -272,6 +272,7 @@ class TradeResponseView(APIView):
             updateStickers(trade, receiver_tq, 'r')
             trade.trade_status = 2
             trade.save()
+            status = 1
         # elif status == 3:
         #     trade.tradeStatus = 3
         #     trade.save()
@@ -313,6 +314,7 @@ def updateStickers(trade, tsq, s_or_r):
 def tradeResponses(resp, **kwargs):
     errors = {
         0: "Trade sent successfully",
+        1: "The trade has been completed",
         2: "The sender no longer has the required stickers for the trade",
         3: "The receiver no longer has the required stickers for the trade",
         4: "The trade will leave the user with less than 1 sticker which isn't allowed",
