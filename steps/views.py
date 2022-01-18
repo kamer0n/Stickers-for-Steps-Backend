@@ -273,6 +273,10 @@ class TradeResponseView(APIView):
             trade.trade_status = 2
             trade.save()
             status = 1
+        elif status == 3:
+            trade.trade_status = 3
+            trade.save()
+            status = 5
 
         return tradeResponses(status)
 
