@@ -115,8 +115,8 @@ class Trade(models.Model):
         COUNTEROFFER = 4, "COUNTER_OFFER"
         INVALID = 5, "INVALID"
 
-    sender = models.OneToOneField(User, on_delete=models.CASCADE, related_name='sender')
-    receiver = models.OneToOneField(User, on_delete=models.CASCADE)
+    sender = models.OneToOneField(User, on_delete=models.CASCADE, related_name='sender', unique=False)
+    receiver = models.OneToOneField(User, on_delete=models.CASCADE, unique=False)
     time_sent = models.DateTimeField(default=timezone.now)
     trade_status = models.PositiveSmallIntegerField(choices=TradeStatus.choices, default=TradeStatus.SENT_RECEIVED)
 

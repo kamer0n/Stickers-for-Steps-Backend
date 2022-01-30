@@ -222,26 +222,32 @@ class TradeView(APIView):
             receiver_id=trade['receiver'],
         )
         if not trade_id[1]:
-            return tradeResponses(1, trade_id[0])
+            print('here')
+            print(trade_id)
+            return tradeResponses(8)
         for sticker in trade['sender_stickers']:
             sender_tq = TradeStickerQuantity.objects.get_or_create(
                 connected_trade=trade_id[0],
                 sticker_id=sticker['sticker'],
                 quantity=sticker['quantity'],
+                send_or_recv=1,
             )
         for sticker in trade['receiver_stickers']:
             receiver_tq = TradeStickerQuantity.objects.get_or_create(
                 connected_trade=trade_id[0],
                 sticker_id=sticker['sticker'],
                 quantity=sticker['quantity'],
+                send_or_recv=2,
             )
+
+        return tradeResponses(0)
 
         #serializer = TradesSerializer(data=request.data)
         #if serializer.is_valid(raise_exception=ValueError):
          #   serializer.create(validated_data=request.data)
          #   return Response(serializer.data, status=status.HTTP_201_CREATED)
         #return Response({"error": True, "error_msg": serializer.error_messages}, status=status.HTTP_400_BAD_REQUEST)
-        return HttpResponse(status=200)
+        #return HttpResponse(status=200)
 
 class TradeResponseView(APIView):
 
@@ -312,6 +318,7 @@ def tradeResponses(resp, **kwargs):
         5: "This trade has been declined.",
         6: "This trade has been counter-offered.",
         7: "This trade has become invalid.",
+        8: 'A trade between these users already exists',
     }
     if kwargs is None:
         errors[1] = f"Trade already exists between {kwargs[0].sender.username} and {kwargs[0].receiver.username}."
