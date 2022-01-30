@@ -216,8 +216,9 @@ class TradeView(APIView):
 
     def post(self, format=None):
         trade = self.request.data
+        user = self.request.user
         trade_id = Trade.objects.get_or_create(
-            sender_id=trade['sender'],
+            sender_id=user.id,
             receiver_id=trade['receiver'],
         )
         if not trade_id[1]:
