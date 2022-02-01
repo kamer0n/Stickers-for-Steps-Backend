@@ -1,9 +1,13 @@
+import datetime
+import json
+
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
+from friends.serializers import FriendshipListSerializer
 from .serializers import UserSerializer, UserStickerSerializer, CollectionSerializer, StickerSerializer, \
     AllStickerSerializer, TradesSerializer
 from rest_framework.views import APIView
@@ -86,7 +90,6 @@ class UserRecordView(APIView):
 
     def post(self, request):
         from rest_framework import status
-        print(request.data)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=ValueError):
             serializer.create(validated_data=request.data)
@@ -94,12 +97,18 @@ class UserRecordView(APIView):
         return Response({"error": True, "error_msg": serializer.error_messages}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ProfileView(APIView):
+
+    def post(self, request):
+        profile = Profile.objects.get(user_id=int((self.request.data['id'])))
+        serializer = FriendshipListSerializer(profile)
+        return Response([serializer.data])
+
 
 class ProfileStickersView(APIView):
 
     def post(self, format=None):
         exists = False
-        print(self.request.data)
         try:
             exists = self.request.data['user']
             collection = self.request.data['collection']
@@ -108,7 +117,6 @@ class ProfileStickersView(APIView):
         if exists:
             profile = Profile.objects.get(user=User.objects.get(username=exists))
             sticks = profile.get_stickers_by_collection(collection)
-            print(sticks)
             serializer = UserStickerSerializer(sticks, many=True)
             #colls = sorted(profile.get_stickers(), key=lambda d: d.collection_id)
 
@@ -166,9 +174,7 @@ class LeaderboardView(APIView):
     def post(self, format=None):
         profiles = Profile.objects.all()
         current = Profile.objects.get(user=self.request.user)
-        print(current)
         friends_list = Friend.objects.friends(self.request.user)
-        print(friends_list)
         board = []
         for profile in profiles:
             already_friends = "false"
@@ -220,11 +226,12 @@ class TradeView(APIView):
         trade_id = Trade.objects.get_or_create(
             sender_id=user.id,
             receiver_id=trade['receiver'],
+            time_sent=datetime.datetime.now(),
         )
-        if not trade_id[1]:
-            print('here')
-            print(trade_id)
-            return tradeResponses(8)
+        #if not trade_id[1]:
+            #print('here')
+            #print(trade_id)
+            #return tradeResponses(8)
         for sticker in trade['sender_stickers']:
             sender_tq = TradeStickerQuantity.objects.get_or_create(
                 connected_trade=trade_id[0],
@@ -284,6 +291,14 @@ class TradeResponseView(APIView):
             trade.trade_status = 3
             trade.save()
             status = 5
+        elif status == 4:
+            trade.trade_status = 4
+            trade.save()
+            status = 6
+        elif status == 6:
+            trade.trade_status = 6
+            trade.save()
+            status = 9
 
         return tradeResponses(status)
 
@@ -319,6 +334,7 @@ def tradeResponses(resp, **kwargs):
         6: "This trade has been counter-offered.",
         7: "This trade has become invalid.",
         8: 'A trade between these users already exists',
+        9: 'This trade has been cancelled.',
     }
     if kwargs is None:
         errors[1] = f"Trade already exists between {kwargs[0].sender.username} and {kwargs[0].receiver.username}."

@@ -121,15 +121,12 @@ class TradesSerializer(serializers.ModelSerializer):
 
     def get_sender_stickers(self, obj):
         stickers = TradeStickerQuantity.objects.filter(connected_trade=obj, send_or_recv=1)
-        print(stickers.values())
         stickers = TradeSQSerializer(stickers, many=True).data
-        print(stickers)
         return stickers
 
     def get_receiver_stickers(self, obj):
         stickers = TradeStickerQuantity.objects.filter(connected_trade=obj, send_or_recv=2)
         stickers = TradeSQSerializer(stickers, many=True).data
-        print(stickers)
         return stickers
 
     def get_sender_name(self, obj):

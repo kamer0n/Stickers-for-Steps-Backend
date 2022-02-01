@@ -114,6 +114,7 @@ class Trade(models.Model):
         DECLINED = 3, "DECLINED"
         COUNTEROFFER = 4, "COUNTER_OFFER"
         INVALID = 5, "INVALID"
+        CANCELLED = 6, "CANCELLED"
 
     sender = models.OneToOneField(User, on_delete=models.CASCADE, related_name='sender', unique=False)
     receiver = models.OneToOneField(User, on_delete=models.CASCADE, unique=False)
