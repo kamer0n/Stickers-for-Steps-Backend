@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.admin import display
 
+from simple_history.admin import SimpleHistoryAdmin
+
+
 from steps.models import *
 
 
@@ -55,6 +58,6 @@ admin.site.register(UploadPrivate, UploadPrivateAdmin)
 admin.site.register(Sticker, StickerAdmin)
 admin.site.register(Collection, CollectionAdmin)
 admin.site.register(StickerQuantity, StickerQuantityAdmin)
-admin.site.register(Steps, StepsAdmin)
+admin.site.register(Steps, SimpleHistoryAdmin)
 admin.site.register(TradeStickerQuantity, TradeStickerAdmin)
 admin.site.register(Trade, TradeAdmin)
