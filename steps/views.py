@@ -280,6 +280,8 @@ class TradeResponseView(APIView):
             return tradeResponses(4)
         valid = 2
         if status == 2:
+            if trade.trade_status == 2:
+                return tradeResponses(7)
             sender_tq = TradeStickerQuantity.objects.filter(connected_trade=trade, send_or_recv=1)
             receiver_tq = TradeStickerQuantity.objects.filter(connected_trade=trade, send_or_recv=2)
             updateStickers(trade, sender_tq, 's')
