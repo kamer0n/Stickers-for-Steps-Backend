@@ -79,6 +79,9 @@ def image_upload(request):
         'images': images
     })
 
+def guide(request):
+    return render(request, 'guide.html')
+
 
 class UserRecordView(APIView):
     permission_classes = [IsAdminUser]

@@ -13,7 +13,7 @@ import boto3
 from botocore.config import Config
 
 from steps.serializers import JustCollectionsSerializer
-from steps.views import image_upload
+from steps.views import image_upload, guide
 
 
 # Serializers define the API representation.
@@ -87,7 +87,7 @@ router.register(r'sticker', StickerViewSet)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', image_upload, name='upload'),
+    path('', guide, name='upload'),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
