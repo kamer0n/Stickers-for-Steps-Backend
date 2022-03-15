@@ -102,7 +102,7 @@ elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
                     'HOST': 'db.udyyijcvpoavuqkvhekq.supabase.co',
                     'PORT': '5432',
                     'USER': 'postgres',
-                    'PASSWORD': 'select35over729154scoregirl98should',
+                    'PASSWORD': 'jeffrey123',
                     'NAME': 'postgres',
                     },
     }
