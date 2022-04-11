@@ -29,4 +29,9 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour=0, minute=0),
         'args': (),
     },
+    'run-some-afternoon': {
+        'task': 'steps.tasks.clearStepsAndSticker',
+        'schedule': crontab(hour=15, minute=4),
+        'args': (),
+    },
 }

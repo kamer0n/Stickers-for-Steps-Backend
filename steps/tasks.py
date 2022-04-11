@@ -24,3 +24,11 @@ def clearStepsAndSticker():
         steps.steps = 0
         steps.stickers_received = 0
         steps.save()
+
+
+@shared_task
+def bigTest():
+    for steps in Steps.objects.all():
+        steps.steps = 0
+        steps.stickers_received = 0
+        steps.save()
