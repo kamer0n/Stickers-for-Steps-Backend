@@ -14,6 +14,8 @@ import os
 import sys
 import dj_database_url
 from pathlib import Path
+
+import djcelery
 from django.core.management.utils import get_random_secret_key
 
 
@@ -217,3 +219,5 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+djcelery.setup_loader()
