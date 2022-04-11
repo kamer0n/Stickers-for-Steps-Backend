@@ -30,7 +30,7 @@ app.conf.beat_schedule = {
         'args': (),
     },
     'run-some-afternoon': {
-        'task': 'steps.tasks.clearStepsAndSticker',
+        'task': 'steps.tasks.bigTest',
         'schedule': crontab(hour=15, minute=4),
         'args': (),
     },
