@@ -11,6 +11,7 @@ from celery import Celery
 
 
 app = Celery('stepsServer', broker='redis://localhost')
+app.autodiscover_tasks(lambda: settings.INSTALLED_APPS, force=True)
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
@@ -31,7 +32,7 @@ app.conf.beat_schedule = {
     },
     'run-some-afternoon': {
         'task': 'steps.tasks.bigTest',
-        'schedule': crontab(hour=15, minute=7),
+        'schedule': crontab(hour=15, minute=8),
         'args': (),
     },
 }
