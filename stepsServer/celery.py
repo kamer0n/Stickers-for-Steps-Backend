@@ -3,7 +3,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stepsServer.settings')
 from django.conf import settings
 from celery.schedules import crontab
 
-from steps.tasks import clearStepsAndSticker
+from steps.tasks import clearStepsAndSticker, bigTest
 
 from celery import Celery
 
@@ -31,7 +31,7 @@ app.conf.beat_schedule = {
     },
     'run-some-afternoon': {
         'task': 'steps.tasks.bigTest',
-        'schedule': crontab(hour=15, minute=4),
+        'schedule': crontab(hour=15, minute=5),
         'args': (),
     },
 }
