@@ -1,6 +1,10 @@
 # StepsServer
 
-# Installation  
+## About
+
+This is the back-end server developed for the Stickers for Steps app. It is written in Python using Django and DjangoRestFramework.
+
+## Installation  
 
 1. Clone repo
 
